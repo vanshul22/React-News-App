@@ -8,22 +8,46 @@ export class News extends Component {
     constructor() {
         // We always have to call super class to use constructor.
         super();
-        this.state = { articles: [] }
+        this.state = { articles: [], page: 1, loading: false }
     };
 
-    // omponentDidMoun will run after render always.
+    // componentDidMoun will run after render always.
     async componentDidMount() {
         let apiKey = "0b0027c52e6b48db86c5d26446c5a6a3";
-        // let typeOfNews = "?q=cricket";
         let country = "?country=in";
-        let url = `https://newsapi.org/v2/top-headlines${country}&apiKey=${apiKey}`;
+        let url = `https://newsapi.org/v2/top-headlines${country}&apiKey=${apiKey}&pageSize=20`;
         // Fetching data here from news.api website.
         let rawData = await fetch(url);
         let parcedData = await rawData.json();
         // Setting data here
-        this.setState({ articles: parcedData.articles });
-    }
+        this.setState({ articles: parcedData.articles, totalResults: parcedData.totalResults });
+    };
+    // Handling previous and next page of news here.
+    handlePreviousClick = async () => {
+        let apiKey = "0b0027c52e6b48db86c5d26446c5a6a3";
+        let country = "?country=in";
+        let url = `https://newsapi.org/v2/top-headlines${country}&apiKey=${apiKey}&page=${this.state.page - 1}&pageSize=20`;
+        // Fetching data here from news.api website.
+        let rawData = await fetch(url);
+        let parcedData = await rawData.json();
+        // Setting data here
+        this.setState({ articles: parcedData.articles, page: this.state.page - 1 });
+    };
 
+    handleNextClick = async () => {
+        if (this.state.page + 1 > Math.ceil(this.state.totalResults / 20)) {
+
+        } else {
+            let apiKey = "0b0027c52e6b48db86c5d26446c5a6a3";
+            let country = "?country=in";
+            let url = `https://newsapi.org/v2/top-headlines${country}&apiKey=${apiKey}&page=${this.state.page + 1}&pageSize=20`;
+            // Fetching data here from news.api website.
+            let rawData = await fetch(url);
+            let parcedData = await rawData.json();
+            // Setting data here
+            this.setState({ articles: parcedData.articles, page: this.state.page + 1 });
+        };
+    };
 
     render() {
         return (
@@ -36,6 +60,10 @@ export class News extends Component {
                             <Newsitem title={element.title ? element.title.slice(0, 45) : ""} description={element.description ? element.description.slice(0, 100) : ""} imgUrl={element.urlToImage} url={element.url} />
                         </div>);
                     })}
+                </div>
+                <div className="container d-flex justify-content-between">
+                    <button disabled={this.state.page <= 1} type="button" className="btn btn-dark" onClick={this.handlePreviousClick}>&larr; Previous</button>
+                    <button type="button" className="btn btn-dark" onClick={this.handleNextClick}>Next &rarr;</button>
                 </div>
             </div>
         );
