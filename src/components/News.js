@@ -21,13 +21,17 @@ export class News extends Component {
 
   // Updating once all news from here for 1 time.
   updateNews = async () => {
+    this.props.setProgress(20);
     this.setState({ page: this.state.page + 1 })
     let apiKey = "0b0027c52e6b48db86c5d26446c5a6a3";
     let url = `https://newsapi.org/v2/top-headlines?country=${this.props.country}&category=${this.props.category}&apiKey=${apiKey}&pageSize=${this.props.pageSize}&page=${this.state.page}`;
     // Fetching data here from news.api website.
     let rawData = await fetch(url);
+    this.props.setProgress(40);
     let parcedData = await rawData.json();
+    this.props.setProgress(70);
     this.setState({ articles: parcedData.articles, totalResults: parcedData.totalResults, loading: false });
+    this.props.setProgress(100);
   };
 
   // componentDidMoun will run after render always.
@@ -46,11 +50,16 @@ export class News extends Component {
     this.setState({ articles: this.state.articles.concat(parcedData.articles), totalResults: parcedData.totalResults });
   };
 
+  // To return first char as capital.
+  capitalizeChars = (chars)=>{
+    return chars.replace(/^\w/, char => char.toUpperCase());
+  }; 
+
 
   render() {
     return (
       <>
-        <h1 className='text-center'>News Monkey - Top Headlines</h1>
+        <h1 className='text-center mt-4'>News Monkey - {this.capitalizeChars(this.props.category)} Top Headlines</h1>
         {this.state.loading && <Spinner />}
 
         <InfiniteScroll
