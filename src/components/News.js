@@ -6,7 +6,7 @@ import InfiniteScroll from "react-infinite-scroll-component";
 // Importing components here
 import Newsitem from './Newsitem';
 import Spinner from "./Spinner";
-export class News extends Component {
+export default class News extends Component {
   // Setting Default proptypes here
   static defaultProps = { country: "in", pageSize: 6, category: "general", totalResults: 0 };
   // Setting Proptypes Type
@@ -22,7 +22,6 @@ export class News extends Component {
   // Updating once all news from here for 1 time.
   updateNews = async () => {
     this.props.setProgress(20);
-    this.setState({ page: this.state.page + 1 })
     let url = `https://newsapi.org/v2/top-headlines?country=${this.props.country}&category=${this.props.category}&apiKey=${this.props.apiKEY}&pageSize=${this.props.pageSize}&page=${this.state.page}`;
     // Fetching data here from news.api website.
     let rawData = await fetch(url);
@@ -40,8 +39,8 @@ export class News extends Component {
 
   // Fetching Infinite Date from here.
   fetchMoreData = async () => {
+    let url = `https://newsapi.org/v2/top-headlines?country=${this.props.country}&category=${this.props.category}&apiKey=${this.props.apiKEY}&pageSize=${this.props.pageSize}&page=${this.state.page + 1}`;
     this.setState({ page: this.state.page + 1 });
-    let url = `https://newsapi.org/v2/top-headlines?country=${this.props.country}&category=${this.props.category}&apiKey=${this.props.apiKEY}&pageSize=${this.props.pageSize}&page=${this.state.page}`;
     // Fetching data here from news.api website.
     let rawData = await fetch(url);
     let parcedData = await rawData.json();
@@ -49,15 +48,15 @@ export class News extends Component {
   };
 
   // To return first char as capital.
-  capitalizeChars = (chars)=>{
+  capitalizeChars = (chars) => {
     return chars.replace(/^\w/, char => char.toUpperCase());
-  }; 
+  };
 
 
   render() {
     return (
       <>
-        <h1 className='text-center mt-4'>News Monkey - {this.capitalizeChars(this.props.category)} Top Headlines</h1>
+        <h1 className='text-center mt-4 pt-5'>News Monkey - {this.capitalizeChars(this.props.category)} Top Headlines</h1>
         {this.state.loading && <Spinner />}
 
         <InfiniteScroll
@@ -83,5 +82,3 @@ export class News extends Component {
     );
   };
 };
-
-export default News;
