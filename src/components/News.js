@@ -17,7 +17,6 @@ const News = (props) => {
   // Function to update News of first Page.
   const updateNews = async () => {
     props.setProgress(20);
-    setPage(page + 1);
     let url = `https://newsapi.org/v2/top-headlines?country=${props.country}&category=${props.category}&apiKey=${props.apiKEY}&pageSize=${props.pageSize}&page=${page}`;
     // Fetching data here from news.api website.
     let rawData = await fetch(url);
@@ -33,12 +32,13 @@ const News = (props) => {
   // Updating once all news from here for 1 time.
   useEffect(() => {
     updateNews();
+    // eslint-disable-next-line
   }, []);
 
   // Fetching app pages Data from here.
   const fetchMoreData = async () => {
+    let url = `https://newsapi.org/v2/top-headlines?country=${props.country}&category=${props.category}&apiKey=${props.apiKEY}&pageSize=${props.pageSize}&page=${page + 1}`;
     setPage(page + 1);
-    let url = `https://newsapi.org/v2/top-headlines?country=${props.country}&category=${props.category}&apiKey=${props.apiKEY}&pageSize=${props.pageSize}&page=${page}`;
     // Fetching data here from news.api website.
     let rawData = await fetch(url);
     let parcedData = await rawData.json();
@@ -54,7 +54,7 @@ const News = (props) => {
 
   return (
     <>
-      <h1 className='text-center mt-4'>News Monkey - {capitalizeChars(props.category)} Top Headlines</h1>
+      <h1 className='text-center mt-5 pt-5'>News Monkey - {capitalizeChars(props.category)} Top Headlines</h1>
       {loading && <Spinner />}
 
       <InfiniteScroll
