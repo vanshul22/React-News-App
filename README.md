@@ -2,6 +2,8 @@
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
+To check live page in Video format, Please [click here](https://github.com/vanshul22/React-News-App/tree/master/App_Video_in_Local_Server).
+
 ## Available Scripts
 
 In the project directory, you can run:
